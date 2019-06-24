@@ -9,6 +9,14 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
+    <style>
+        /* div{
+              text-align: center;
+              line-height: 23;
+              margin: 0 auto;
+          } */
+    </style>
 </head>
 
 <body>
@@ -25,12 +33,90 @@
                 <i class="iconfont icon-key"></i>
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
-                <input type="submit" class="input_sub" value="登 录">
+                <input type="submit" class="input_sub" id="btn_login" value="登 录">
             </form>
         </div>
 
-    </div> 
+    </div>
+    <!-- Large modal -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">温馨提示</button> -->
 
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="btn"
+        aria-labelledby="myLargeModalLabel">
+        <button type="button" class="btn btn-primary" data-toggle="modal"
+            data-target=".bs-example-modal-lg">温馨提示</button>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
 </body>
+<script src="./js/jquery-1.12.4.min.js"></script>
+<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    //  1.给登录注册一个点击事件
+    $('#btn_login').on('click', function (e) {
+        e.preventDefault();
+
+        //   2.获取用户输入的用户名和密码,去掉前后空格 trim()
+        var userName = $('.input_txt').val().trim();
+        var password = $('.input_pass').val().trim();
+        //    3.判断是否为空
+        if (userName == '' || password == '') {
+            //  alert('输入的密码或用户名为空');
+            $('.btn-primary').css({
+                'margin': "10px auto",
+                'display': 'block'
+            })
+            $('.modal-content').css({
+                'text-align': 'center',
+                'padding': '20',
+            })
+            $('.modal-content').text('输入的密码或用户名为空');
+            $('#btn').modal(
+                {
+                    keyboard: true
+                }
+            )
+            return;
+        }
+
+        //  4.发送ajax请求,判断账号密码是否正确
+
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8000/admin/login',
+            data: {
+                user_name: userName,
+                password: password
+            },
+            success: function (backData) {
+                if (backData.code == 200) {
+
+                    location.href = './index.html';
+                } else {
+                    $('.modal-content').css({
+                        'text-align': 'center',
+                        'padding': '20',
+                    })
+                    $('.btn-primary').css({
+                        'margin': "10px auto",
+                        'display': 'block'
+                    })
+
+                    $('.modal-content').text(backData.msg);
+                    $('#btn').modal(
+                        {
+                            keyboard: true
+                        }
+                    );
+                };
+            }
+
+        });
+    })
+
+</script>
 
 </html>
