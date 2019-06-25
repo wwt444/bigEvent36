@@ -104,8 +104,26 @@
 
     </script>
     <script>
+      $(function(){
+            //    一进到首页,就应该发送ajax请求,获取用户信息(个人图片和昵称)
+            // 把这个图片和昵称显示在首页对应的标签的.
+
+// 注意的是span标签不要设置text, 应该设置html,因为他设置的内容里面包含了标签. &nbsp
+             $.ajax({
+                      url:'http://localhost:8000/admin/userinfo_get',
+                      success:function(data){
+                          console.log(data);
+                          if(data.code == 200){
+                                 $('.user_info img').attr('src',data.data.user_pic);
+                                 $('.user_info span').html('欢迎&nbsp;&nbsp;'+data.data.username);
+                                 $('.user_center_link img').attr('src',data.data.user_pic);
+                          }
+                          
+                      }
+             })
+    
     //    点击退出a标签,发送ajax请求
-          $('#logout').on('click',function(e){
+    $('#logout').on('click',function(e){
                e.preventDefault();
                $.ajax({
                    type:'post',
@@ -120,6 +138,7 @@
                })
           })
      
+      })
     </script>
 
 </body>
